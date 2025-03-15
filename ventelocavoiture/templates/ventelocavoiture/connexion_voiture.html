@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="{% static 'ventelocavoiture/css/login-register-styles.css' %}">
+</head>
+<body>
+    <form method="POST" action="{% url 'ventelocavoiture:connexion' %}">
+        {% csrf_token %}
+        <fieldset>
+            <legend>
+                <h1>CONNEXION</h1>
+            </legend>
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <label for="email">EMAIL:</label>
+            <input type="email" name="email" id="email" required><br><br>
+            <label for="password">PASSWORD:</label>
+            <input type="password" name="password" id="password" required><br><br>
+            <button type="submit" class="btn2">CONNEXION</button><br><br>
+            <a href="{% url 'ventelocavoiture:inscription' %}">Vous n'avez pas de compte inscrivez-vous</a>
+        </fieldset>
+    </form>
+</body>
+</html>

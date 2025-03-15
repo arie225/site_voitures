@@ -1,0 +1,162 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block page_title %}Aperçu général{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Statistiques des voitures -->
+    <div class="col-md-3 mb-4">
+        <div class="card dashboard-card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Total des voitures</h6>
+                        <h2 class="mb-0">{{ total_voitures }}</h2>
+                    </div>
+                    <i class="fas fa-car fa-3x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card dashboard-card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Voitures disponibles</h6>
+                        <h2 class="mb-0">{{ voitures_disponibles }}</h2>
+                    </div>
+                    <i class="fas fa-check-circle fa-3x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card dashboard-card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Voitures vendues</h6>
+                        <h2 class="mb-0">{{ voitures_vendues }}</h2>
+                    </div>
+                    <i class="fas fa-tags fa-3x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card dashboard-card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Voitures louées</h6>
+                        <h2 class="mb-0">{{ voitures_louees }}</h2>
+                    </div>
+                    <i class="fas fa-key fa-3x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques des utilisateurs et transactions -->
+    <div class="col-md-4 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-muted">Total des utilisateurs</h6>
+                        <h2 class="mb-0">{{ total_utilisateurs }}</h2>
+                    </div>
+                    <i class="fas fa-users fa-3x text-primary opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-muted">Revenus des ventes</h6>
+                        <h2 class="mb-0">{{ revenus_ventes|floatformat:0 }} F CFA</h2>
+                    </div>
+                    <i class="fas fa-money-bill-wave fa-3x text-success opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-muted">Revenus des locations</h6>
+                        <h2 class="mb-0">{{ revenus_locations|floatformat:0 }} F CFA</h2>
+                    </div>
+                    <i class="fas fa-hand-holding-usd fa-3x text-info opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dernières transactions -->
+    <div class="col-12 mb-4">
+        <div class="card dashboard-card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Transactions récentes</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Utilisateur</th>
+                                <th>Voiture</th>
+                                <th>Type</th>
+                                <th>Montant</th>
+                                <th>Numéros de téléphone</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions_recentes %}
+                            <tr>
+                                <td>{{ transaction.id }}</td>
+                                <td>{{ transaction.utilisateur.prenom }} {{ transaction.utilisateur.nom }}</td>
+                                <td>{{ transaction.voiture.marque }} {{ transaction.voiture.modele }}</td>
+                                <td>
+                                    {% if transaction.type_transaction == 'achat' %}
+                                    <span class="badge bg-info">Achat</span>
+                                    {% else %}
+                                    <span class="badge bg-warning">Location</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ transaction.montant|floatformat:0 }} F CFA</td>
+                                <td>{{ transaction.utilisateur.numeros }}</td>
+                                <td>{{ transaction.date_transaction|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aucune transaction récente</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-end mt-3">
+                    <a href="{% url 'ventelocavoiture:dashboard_transactions' %}"
+                        class="btn btn-sm btn-outline-primary">Voir toutes les transactions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

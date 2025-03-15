@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <h1>Résultats de recherche pour "{{ query }}"</h1>
+  
+  {% if voitures %}
+    <div class="voitures-grid">
+      {% for voiture in voitures %}
+      <div class="voiture-card">
+        <img src="{{ voiture.image.url }}" alt="{{ voiture }}">
+        <h3>{{ voiture.marque }} {{ voiture.modele }}</h3>
+        <p>Année: {{ voiture.annee }}</p>
+        <p>Kilométrage: {{ voiture.kilometrage }} km</p>
+        
+        {% if voiture.type_offre == 'vente' or voiture.type_offre == 'les_deux' %}
+        <p>Prix de vente: {{ voiture.prix_vente }} €</p>
+        {% endif %}
+        
+        {% if voiture.type_offre == 'location' or voiture.type_offre == 'les_deux' %}
+        <p>Prix de location: {{ voiture.prix_location_jour }} € / jour</p>
+        {% endif %}
+        
+        <a href="{% url 'ventelocavoiture:detail_voiture' voiture.id %}" class="btn">Voir les détails</a>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="no-results">Aucune voiture ne correspond à votre recherche.</p>
+  {% endif %}
+</div>
+{% endblock %}

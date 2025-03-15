@@ -1,0 +1,58 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Confirmer la suppression{% endblock %}
+
+{% block page_title %}Confirmer la suppression{% endblock %}
+
+{% block content %}
+<div class="card dashboard-card">
+    <div class="card-body text-center">
+        <div class="mb-4">
+            <i class="fas fa-exclamation-triangle fa-4x text-warning"></i>
+        </div>
+        
+        <h4 class="mb-4">Êtes-vous sûr de vouloir supprimer {{ type }} suivant(e) ?</h4>
+        
+        {% if type == 'voiture' %}
+        <div class="mb-4">
+            <p class="fs-5">{{ voiture.marque }} {{ voiture.modele }} ({{ voiture.annee }})</p>
+            {% if voiture.image %}
+            <img src="{{ voiture.image.url }}" alt="{{ voiture.marque }} {{ voiture.modele }}" class="img-thumbnail mx-auto" style="max-width: 200px;">
+            {% endif %}
+        </div>
+        {% elif type == 'utilisateur' %}
+        <div class="mb-4">
+            <p class="fs-5">{{ utilisateur.prenom }} {{ utilisateur.nom }} ({{ utilisateur.email }})</p>
+        </div>
+        {% elif type == 'transaction' %}
+        <div class="mb-4">
+            <p class="fs-5">Transaction #{{ transaction.id }} - {{ transaction.montant }} F CFA</p>
+            <p>{{ transaction.utilisateur.prenom }} {{ transaction.utilisateur.nom }} - {{ transaction.voiture.marque }} {{ transaction.voiture.modele }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="alert alert-danger">
+            <strong>Attention :</strong> Cette action est irréversible et ne peut pas être annulée !
+        </div>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash-alt me-2"></i> Confirmer la suppression
+                </button>
+                
+                {% if type == 'voiture' %}
+                <a href="{% url 'ventelocavoiture:dashboard_voitures' %}" class="btn btn-secondary">Annuler</a>
+                {% elif type == 'utilisateur' %}
+                <a href="{% url 'ventelocavoiture:dashboard_utilisateurs' %}" class="btn btn-secondary">Annuler</a>
+                {% elif type == 'transaction' %}
+                <a href="{% url 'ventelocavoiture:dashboard_transactions' %}" class="btn btn-secondary">Annuler</a>
+                {% else %}
+                <a href="{% url 'ventelocavoiture:dashboard' %}" class="btn btn-secondary">Annuler</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

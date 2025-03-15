@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventelocavoiture/css/style.css' %}">
+{% endblock %}
+{% block content %}
+<h1>
+  {% if categorie == 'vente' %}
+  Voitures à vendre
+  {% elif categorie == 'location' %}
+  Voitures à louer
+  {% else %}
+  voitures à vendre\louer
+  {% endif %}
+</h1>
+
+<div class="voitures-grid">
+  {% for voiture in voitures %}
+  <div class="voiture-card">
+    <img src="{{ voiture.image.url }}" alt="{{ voiture }}">
+
+    <h3>{{ voiture.marque }} {{ voiture.modele }}</h3>
+    <p>Année: {{ voiture.annee }}</p>
+    <p>Kilométrage: {{ voiture.kilometrage }} km</p>
+
+    {% if voiture.type_offre == 'vente' or voiture.type_offre == 'les_deux' %}
+    <p>Prix de vente: {{ voiture.prix_vente }} FCFA</p>
+    {% endif %}
+
+    {% if voiture.type_offre == 'location' or voiture.type_offre == 'les_deux' %}
+    <p>Prix de location: {{ voiture.prix_location_jour }} FCFA / jour</p>
+    {% endif %}
+
+    <a href="{% url 'ventelocavoiture:detail_voiture' voiture.id %}" class="btn">Voir les détails</a>
+  </div>
+  {% empty %}
+  <p>Aucune voiture disponible pour le moment.</p>
+  {% endfor %}
+</div>
+{% endblock %}

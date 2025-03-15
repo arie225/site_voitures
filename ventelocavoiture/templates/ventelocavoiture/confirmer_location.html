@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventelocavoiture/css/style.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Confirmation de location</h1>
+
+    <div class="voiture-resume">
+        <h2>{{ voiture.marque }} {{ voiture.modele }} ({{ voiture.annee }})</h2>
+        <p><strong>Prix de location:</strong> {{ voiture.prix_location_jour }} € / jour</p>
+        <p><strong>Kilométrage:</strong> {{ voiture.kilometrage }} km</p>
+    </div>
+    
+    <div class="client-info">
+        <h3>Informations client</h3>
+        <p><strong>Nom:</strong> {{ utilisateur.nom }} {{ utilisateur.prenom }}</p>
+        <p><strong>Email:</strong> {{ utilisateur.email }}</p>
+        <p><strong>Téléphone:</strong> {{ utilisateur.numeros }}</p>
+    </div>
+
+    <div class="confirmation-form">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="date_debut">Date de début:</label>
+                <input type="date" id="date_debut" name="date_debut" required class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="date_fin">Date de fin:</label>
+                <input type="date" id="date_fin" name="date_fin" required class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Confirmer la location</button>
+            <a href="{% url 'ventelocavoiture:detail_voiture' voiture.id %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

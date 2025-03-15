@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventelocavoiture/css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="voiture-detail">
+  <h1>{{ voiture.marque }} {{ voiture.modele }} ({{ voiture.annee }})</h1>
+
+  <div class="voiture-images">
+    {% for image in voiture.images.all %}
+    <img src="{{ image.image.url }}" alt="{{ voiture }}" class="image-detail">
+    {% empty %}
+    <div class="no-image">Pas d'image disponible</div>
+    {% endfor %}
+  </div>
+
+  <div class="voiture-info">
+    <p><strong>Marque:</strong> {{ voiture.marque }}</p>
+    <p><strong>Modèle:</strong> {{ voiture.modele }}</p>
+    <p><strong>Année:</strong> {{ voiture.annee }}</p>
+    <p><strong>Kilométrage:</strong> {{ voiture.kilometrage }} km</p>
+
+    {% if voiture.type_offre == 'vente' or voiture.type_offre == 'les_deux' %}
+    <p><strong>Prix de vente:</strong> {{ voiture.prix_vente }} €</p>
+    {% endif %}
+
+    {% if voiture.type_offre == 'location' or voiture.type_offre == 'les_deux' %}
+    <p><strong>Prix de location:</strong> {{ voiture.prix_location_jour }} € / jour</p>
+    {% endif %}
+
+    <div class="description">
+      <h3>Description</h3>
+      <p>{{ voiture.description|linebreaks }}</p>
+    </div>
+
+    <!-- Dans detail_voiture.html - Remplacez la section "actions" -->
+    <!-- Dans detail_voiture.html - Remplacez la section "actions" -->
+    <div class="actions">
+      {% if 'utilisateur_id' in request.session %}
+      {% if voiture.type_offre == 'vente' or voiture.type_offre == 'les_deux' %}
+      <a href="{% url 'ventelocavoiture:acheter_voiture' voiture.id %}" class="btn btn-primary">Acheter cette
+        voiture</a>
+      {% endif %}
+
+      {% if voiture.type_offre == 'location' or voiture.type_offre == 'les_deux' %}
+      <a href="{% url 'ventelocavoiture:louer_voiture' voiture.id %}" class="btn btn-secondary">Louer cette voiture</a>
+      {% endif %}
+      {% else %}
+      <p class="alert alert-info">Veuillez <a href="{% url 'ventelocavoiture:connexion' %}">vous connecter</a> pour
+        acheter ou louer cette voiture.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

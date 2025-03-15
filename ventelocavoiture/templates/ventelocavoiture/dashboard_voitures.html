@@ -1,0 +1,176 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Gestion des voitures{% endblock %}
+{% block page_title %}Gestion des voitures{% endblock %}
+
+<!-- {% block action_buttons %}
+<a href="{% url 'ventelocavoiture:dashboard_ajouter_voiture' %}" class="btn btn-sm btn-primary">
+    <i class="fas fa-plus me-1"></i> Ajouter une voiture
+</a>
+{% endblock %} -->
+
+{% block content %}
+<a href="{% url 'ventelocavoiture:dashboard_ajouter_voiture' %}" class="btn btn-sm btn-primary">
+    <i class="fas fa-plus me-1"></i> Ajouter une voiture
+</a><br><br>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Liste des voitures</h6>
+        <div class="input-group" style="width: 300px;">
+            <input type="text" class="form-control" placeholder="Rechercher..." id="searchVoitures">
+            <button class="btn btn-outline-secondary" type="button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Marque/Modèle</th>
+                        <th>Type d'offre</th>
+                        <th>Prix vente</th>
+                        <th>Prix location/jour</th>
+                        <th>État</th>
+                        <th>Date d'ajout</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for voiture in voitures %}
+                    <tr>
+                        <td class="text-center">
+                            {% if voiture.image %}
+                            <img src="{{ voiture.image.url }}" class="img-thumbnail" style="height: 50px;">
+                            {% else %}
+                            <i class="fas fa-car fa-2x text-secondary"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ voiture.marque }}</strong><br>
+                            {{ voiture.modele }} ({{ voiture.annee }})
+                        </td>
+                        <td>
+                            {% if voiture.type_offre == 'vente' %}
+                            <span class="badge bg-primary">Vente</span>
+                            {% elif voiture.type_offre == 'location' %}
+                            <span class="badge bg-warning">Location</span>
+                            {% else %}
+                            <span class="badge bg-info">Vente & Location</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if voiture.prix_vente %}
+                            {{ voiture.prix_vente }} €
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if voiture.prix_location_jour %}
+                            {{ voiture.prix_location_jour }} €/jour
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if voiture.etat == 'disponible' %}
+                            <span class="badge bg-success">Disponible</span>
+                            {% elif voiture.etat == 'vendu' %}
+                            <span class="badge bg-secondary">Vendu</span>
+                            {% elif voiture.etat == 'loué' %}
+                            <span class="badge bg-info">Loué</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ voiture.date_ajout|date:"d/m/Y" }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'ventelocavoiture:detail_voiture' voiture.id %}"
+                                    class="btn btn-info btn-sm" title="Voir">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'ventelocavoiture:dashboard_modifier_voiture' voiture.id %}"
+                                    class="btn btn-warning btn-sm" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'ventelocavoiture:dashboard_supprimer_voiture' voiture.id %}"
+                                    class="btn btn-danger btn-sm" title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">Aucune voiture trouvée</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if voitures.has_other_pages %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if voitures.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ voitures.previous_page_number }}">Précédent</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Précédent</span>
+                </li>
+                {% endif %}
+
+                {% for i in voitures.paginator.page_range %}
+                {% if voitures.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if voitures.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ voitures.next_page_number }}">Suivant</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Suivant</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Script pour la recherche de voitures
+    document.getElementById('searchVoitures').addEventListener('keyup', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchVoitures');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('dataTable');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 1; i < tr.length; i++) {
+            // Chercher dans la colonne de marque/modèle (index 1)
+            td = tr[i].getElementsByTagName('td')[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ventelocavoiture/css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Voitures à vendre</h1>
+
+<div class="voitures-grid">
+  {% for voiture in voitures %}
+  <div class="voiture-card">
+    <img src="{{ voiture.image.url }}" alt="{{ voiture }}">
+
+    <h3>{{ voiture.marque }} {{ voiture.modele }}</h3>
+    <p>Année: {{ voiture.annee }}</p>
+    <p>Kilométrage: {{ voiture.kilometrage }} km</p>
+    <p>Prix de vente: {{ voiture.prix_vente }} €</p>
+
+    <a href="{% url 'ventelocavoiture:detail_voiture' voiture.id %}" class="btn">Voir les détails</a>
+  </div>
+  {% empty %}
+  <p>Aucune voiture à vendre disponible pour le moment.</p>
+  {% endfor %}
+</div>
+{% endblock %}

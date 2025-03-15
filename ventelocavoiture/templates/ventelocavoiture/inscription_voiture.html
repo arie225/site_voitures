@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link rel="stylesheet" href="{% static 'ventelocavoiture/css/login-register-styles.css' %}">
+</head>
+<body>
+    <form method="POST" action="{% url 'ventelocavoiture:inscription' %}">
+        {% csrf_token %}
+        <fieldset>
+            <legend>
+                <h1>INSCRIPTION</h1>
+            </legend>
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <label for="nom">NOM:</label>
+            <input type="text" name="nom" id="nom" required><br><br>
+            
+            <label for="prenom">PRENOM:</label>
+            <input type="text" name="prenom" id="prenom" required><br><br>
+            
+            <label for="sexe">SEXE:</label>
+            <select name="sexe" id="sexe" required>
+                <option value="F">F</option>
+                <option value="M">M</option>
+            </select><br><br>
+
+            <label for="numeros">NUMEROS DE TELEPHONE:</label>
+            <input type="number" name="numeros" id="numeros" required><br><br>
+            
+            <label for="email">EMAIL:</label>
+            <input type="email" name="email" id="email" required><br><br>
+            
+            <label for="password">PASSWORD:</label>
+            <input type="password" name="password" id="password" required><br><br>
+            
+            <button type="submit" class="btn1">ENREGISTRER</button><br><br>
+            <a href="{% url 'ventelocavoiture:connexion' %}">Vous avez déja un compte connectez-vous</a>
+        </fieldset>
+    </form>
+</body>
+</html>

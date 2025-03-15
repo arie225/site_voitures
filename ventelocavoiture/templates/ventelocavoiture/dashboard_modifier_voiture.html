@@ -1,0 +1,145 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Modifier une voiture{% endblock %}
+
+{% block page_title %}Modifier la voiture {{ voiture.marque }} {{ voiture.modele }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'ventelocavoiture:dashboard_voitures' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card dashboard-card">
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="marque" class="form-label">Marque*</label>
+                    <input type="text" class="form-control" id="marque" name="marque" value="{{ voiture.marque }}" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="modele" class="form-label">Modèle*</label>
+                    <input type="text" class="form-control" id="modele" name="modele" value="{{ voiture.modele }}" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="annee" class="form-label">Année*</label>
+                    <input type="number" class="form-control" id="annee" name="annee" value="{{ voiture.annee }}" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="kilometrage" class="form-label">Kilométrage*</label>
+                    <input type="number" class="form-control" id="kilometrage" name="kilometrage" value="{{ voiture.kilometrage }}" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="type_offre" class="form-label">Type d'offre*</label>
+                    <select class="form-select" id="type_offre" name="type_offre" required>
+                        <option value="vente" {% if voiture.type_offre == 'vente' %}selected{% endif %}>Vente uniquement</option>
+                        <option value="location" {% if voiture.type_offre == 'location' %}selected{% endif %}>Location uniquement</option>
+                        <option value="les_deux" {% if voiture.type_offre == 'les_deux' %}selected{% endif %}>Vente et Location</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="etat" class="form-label">État*</label>
+                    <select class="form-select" id="etat" name="etat" required>
+                        <option value="disponible" {% if voiture.etat == 'disponible' %}selected{% endif %}>Disponible</option>
+                        <option value="vendu" {% if voiture.etat == 'vendu' %}selected{% endif %}>Vendu</option>
+                        <option value="loué" {% if voiture.etat == 'loué' %}selected{% endif %}>Loué</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="prix_vente" class="form-label">Prix de vente (F CFA)</label>
+                    <input type="number" class="form-control" id="prix_vente" name="prix_vente" value="{{ voiture.prix_vente|default:'' }}">
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="prix_location_jour" class="form-label">Prix de location par jour (F CFA)</label>
+                    <input type="number" class="form-control" id="prix_location_jour" name="prix_location_jour" value="{{ voiture.prix_location_jour|default:'' }}">
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="5">{{ voiture.description }}</textarea>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {% if voiture.image %}
+                    <div class="mb-2">
+                        <label class="form-label">Image actuelle</label>
+                        <div>
+                            <img src="{{ voiture.image.url }}" alt="{{ voiture.marque }} {{ voiture.modele }}" class="img-thumbnail" style="max-width: 200px;">
+                        </div>
+                    </div>
+                    {% endif %}
+                    <label for="image" class="form-label">Nouvelle image principale</label>
+                    <input type="file" class="form-control" id="image" name="image">
+                    <div class="form-text">Laissez vide pour conserver l'image actuelle.</div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    {% if voiture.imagevoiture_set.exists %}
+                    <div class="mb-2">
+                        <label class="form-label">Images supplémentaires actuelles</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for img in voiture.imagevoiture_set.all %}
+                            <img src="{{ img.image.url }}" alt="Image {{ forloop.counter }}" class="img-thumbnail" style="max-width: 100px;">
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <label for="images_supplementaires" class="form-label">Nouvelles images supplémentaires</label>
+                    <input type="file" class="form-control" id="images_supplementaires" name="images_supplementaires" multiple>
+                    <div class="form-text">Ces images seront ajoutées aux images existantes. Vous pouvez sélectionner plusieurs images en maintenant Ctrl (ou Cmd) enfoncé.</div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i> Enregistrer les modifications
+                </button>
+                <a href="{% url 'ventelocavoiture:dashboard_voitures' %}" class="btn btn-outline-secondary ms-2">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Script pour afficher/masquer les champs de prix en fonction du type d'offre
+    function updatePriceFields() {
+        const typeOffre = document.getElementById('type_offre').value;
+        const prixVenteGroup = document.getElementById('prix_vente').parentElement;
+        const prixLocationGroup = document.getElementById('prix_location_jour').parentElement;
+        
+        switch(typeOffre) {
+            case 'vente':
+                prixVenteGroup.style.display = 'block';
+                prixLocationGroup.style.display = 'none';
+                break;
+            case 'location':
+                prixVenteGroup.style.display = 'none';
+                prixLocationGroup.style.display = 'block';
+                break;
+            case 'les_deux':
+                prixVenteGroup.style.display = 'block';
+                prixLocationGroup.style.display = 'block';
+                break;
+        }
+    }
+    
+    // Exécuter au chargement de la page
+    document.addEventListener('DOMContentLoaded', updatePriceFields);
+    
+    // Exécuter lors du changement de type d'offre
+    document.getElementById('type_offre').addEventListener('change', updatePriceFields);
+</script>
+{% endblock %}

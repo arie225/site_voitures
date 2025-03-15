@@ -1,0 +1,94 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+{% block page_title %}Gestion des utilisateurs{% endblock %}
+
+{% block content %}
+<div class="card dashboard-card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Sexe</th>
+                        <th>Numéro</th>
+                        <th>Date d'inscription</th>
+                        <th>Admin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for utilisateur in utilisateurs %}
+                    <tr>
+                        <td>{{ utilisateur.id }}</td>
+                        <td>{{ utilisateur.nom }}</td>
+                        <td>{{ utilisateur.prenom }}</td>
+                        <td>{{ utilisateur.email }}</td>
+                        <td>{{ utilisateur.sexe }}</td>
+                        <td>{{ utilisateur.numeros }}</td>
+                        <td>{{ utilisateur.date_inscription|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if utilisateur.is_admin %}
+                            <span class="badge bg-success">Oui</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Non</span>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center">Aucun utilisateur trouvé</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if utilisateurs.has_other_pages %}
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Navigation des pages">
+                <ul class="pagination">
+                    {% if utilisateurs.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ utilisateurs.previous_page_number }}">Précédent</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Précédent</span>
+                    </li>
+                    {% endif %}
+
+                    {% for i in utilisateurs.paginator.page_range %}
+                    {% if utilisateurs.number == i %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ i }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if utilisateurs.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ utilisateurs.next_page_number }}">Suivant</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Suivant</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

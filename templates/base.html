@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Site de vente et location de voitures{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'ventelocavoiture:accueil' %}">Toutes les voitures</a></li>
+                <li><a href="{% url 'ventelocavoiture:voitures_a_vendre' %}">Voitures à vendre</a></li>
+                <li><a href="{% url 'ventelocavoiture:voitures_a_louer' %}">Voitures à louer</a></li>
+
+                <!-- Ajout des liens de connexion/déconnexion -->
+                <!-- Ajout des liens de connexion/déconnexion -->
+                <li class="auth-links">
+                    {% if utilisateur_connecte %}
+                    <span class="user-greeting">Bonjour, {{ utilisateur.prenom }}</span>
+                    <a href="{% url 'ventelocavoiture:deconnexion' %}" class="btn-deconnexion">Déconnexion</a>
+                    {% else %}
+                    <a href="{% url 'ventelocavoiture:connexion' %}">Connexion</a>
+                    <a href="{% url 'ventelocavoiture:inscription' %}">Inscription</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
+        <!-- Ajouter dans base.html, peut-être après la navigation -->
+        <!-- Extension du formulaire de recherche avec filtres -->
+        <div class="search-container">
+            <h2 class="search-title">Recherche avancée</h2>
+            
+            <form action="{% url 'ventelocavoiture:recherche' %}" method="GET" class="search-form">
+              <input type="text" name="q" placeholder="Marque, modèle ou mots-clés..." value="{{ request.GET.q }}">
+              
+              <div class="search-filters">
+                <select name="type_offre" class="filter-select">
+                  <option value="">Type d'offre</option>
+                  <option value="vente" {% if request.GET.type_offre == 'vente' %}selected{% endif %}>Vente</option>
+                  <option value="location" {% if request.GET.type_offre == 'location' %}selected{% endif %}>Location</option>
+                  <option value="les_deux" {% if request.GET.type_offre == 'les_deux' %}selected{% endif %}>Les deux</option>
+                </select>
+                
+                <select name="marque" class="filter-select">
+                  <option value="">Toutes les marques</option>
+                  {% for marque in marques %}
+                    <option value="{{ marque }}" {% if request.GET.marque == marque %}selected{% endif %}>{{ marque }}</option>
+                  {% endfor %}
+                </select>
+                
+                <div class="price-range">
+                  <input type="number" name="prix_min" placeholder="Prix min" value="{{ request.GET.prix_min }}">
+                  <input type="number" name="prix_max" placeholder="Prix max" value="{{ request.GET.prix_max }}">
+                </div>
+              </div>
+              
+              <button type="submit" class="search-button">Rechercher</button>
+            </form>
+            
+            {% if request.GET %}
+            <div class="active-filters">
+              {% if request.GET.q %}
+              <div class="filter-badge">
+                Recherche: {{ request.GET.q }}
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'q' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" class="remove">X</a>
+              </div>
+              {% endif %}
+              
+              {% if request.GET.type_offre %}
+              <div class="filter-badge">
+                Type: {% if request.GET.type_offre == 'vente' %}Vente{% elif request.GET.type_offre == 'location' %}Location{% else %}Les deux{% endif %}
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'type_offre' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" class="remove">X</a>
+              </div>
+              {% endif %}
+              
+              {% if request.GET.marque %}
+              <div class="filter-badge">
+                Marque: {{ request.GET.marque }}
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'marque' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" class="remove">X</a>
+              </div>
+              {% endif %}
+              
+              {% if request.GET.prix_min or request.GET.prix_max %}
+              <div class="filter-badge">
+                Prix: {% if request.GET.prix_min %}{{ request.GET.prix_min }}€{% else %}0€{% endif %} - {% if request.GET.prix_max %}{{ request.GET.prix_max }}€{% else %}∞{% endif %}
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'prix_min' and key != 'prix_max' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" class="remove">X</a>
+              </div>
+              {% endif %}
+            </div>
+            {% endif %}
+            
+            {% if voitures %}
+            <div class="results-count">{{ voitures.count }} résultat{{ voitures.count|pluralize }}</div>
+            {% endif %}
+          </div>
+    </header>
+
+    <main>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}
+        <!-- Ce bloc sera remplacé par le contenu des templates enfants -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - Mon Site de Voitures</p>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
