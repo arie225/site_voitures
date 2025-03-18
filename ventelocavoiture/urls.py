@@ -13,7 +13,6 @@ urlpatterns = [
     path('voiture/<int:voiture_id>/louer/', views.louer_voiture, name='louer_voiture'),
     path('deconnexion/', views.deconnexion, name='deconnexion'),
     path('recherche/', views.recherche_voitures, name='recherche'),
-    # Ajouter ces lignes à votre fichier urls.py
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/voitures/', views.dashboard_voitures, name='dashboard_voitures'),
     path('dashboard/voitures/ajouter/', views.dashboard_ajouter_voiture, name='dashboard_ajouter_voiture'),

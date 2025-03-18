@@ -24,11 +24,11 @@
     <p><strong>Kilométrage:</strong> {{ voiture.kilometrage }} km</p>
 
     {% if voiture.type_offre == 'vente' or voiture.type_offre == 'les_deux' %}
-    <p><strong>Prix de vente:</strong> {{ voiture.prix_vente }} €</p>
+    <p><strong>Prix de vente:</strong> {{ voiture.prix_vente }} FCFA</p>
     {% endif %}
 
     {% if voiture.type_offre == 'location' or voiture.type_offre == 'les_deux' %}
-    <p><strong>Prix de location:</strong> {{ voiture.prix_location_jour }} € / jour</p>
+    <p><strong>Prix de location:</strong> {{ voiture.prix_location_jour }} FCFA / jour</p>
     {% endif %}
 
     <div class="description">

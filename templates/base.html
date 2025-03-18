@@ -18,8 +18,7 @@
                 <li><a href="{% url 'ventelocavoiture:voitures_a_vendre' %}">Voitures à vendre</a></li>
                 <li><a href="{% url 'ventelocavoiture:voitures_a_louer' %}">Voitures à louer</a></li>
 
-                <!-- Ajout des liens de connexion/déconnexion -->
-                <!-- Ajout des liens de connexion/déconnexion -->
+                
                 <li class="auth-links">
                     {% if utilisateur_connecte %}
                     <span class="user-greeting">Bonjour, {{ utilisateur.prenom }}</span>
@@ -31,7 +30,6 @@
                 </li>
             </ul>
         </nav>
-        <!-- Ajouter dans base.html, peut-être après la navigation -->
         <!-- Extension du formulaire de recherche avec filtres -->
         <div class="search-container">
             <h2 class="search-title">Recherche avancée</h2>
@@ -88,7 +86,7 @@
               
               {% if request.GET.prix_min or request.GET.prix_max %}
               <div class="filter-badge">
-                Prix: {% if request.GET.prix_min %}{{ request.GET.prix_min }}€{% else %}0€{% endif %} - {% if request.GET.prix_max %}{{ request.GET.prix_max }}€{% else %}∞{% endif %}
+                Prix: {% if request.GET.prix_min %}{{ request.GET.prix_min }} FCFA{% else %}0 FCFA{% endif %} - {% if request.GET.prix_max %}{{ request.GET.prix_max }} FCFA{% else %}∞{% endif %}
                 <a href="?{% for key, value in request.GET.items %}{% if key != 'prix_min' and key != 'prix_max' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" class="remove">X</a>
               </div>
               {% endif %}
