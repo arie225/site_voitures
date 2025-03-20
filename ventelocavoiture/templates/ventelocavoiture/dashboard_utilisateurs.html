@@ -17,7 +17,7 @@
                         <th>Email</th>
                         <th>Sexe</th>
                         <th>Numéro</th>
-                        <th>Date d'inscription</th>
+                        <!-- <th>Date d'inscription</th> -->
                         <th>Admin</th>
                     </tr>
                 </thead>
@@ -30,7 +30,7 @@
                         <td>{{ utilisateur.email }}</td>
                         <td>{{ utilisateur.sexe }}</td>
                         <td>{{ utilisateur.numeros }}</td>
-                        <td>{{ utilisateur.date_inscription|date:"d/m/Y" }}</td>
+                        <!-- <td>{{ utilisateur.date_inscription|date:"d/m/Y" }}</td> -->
                         <td>
                             {% if utilisateur.is_admin %}
                             <span class="badge bg-success">Oui</span>
