@@ -3,11 +3,7 @@
 {% block title %}Gestion des voitures{% endblock %}
 {% block page_title %}Gestion des voitures{% endblock %}
 
-<!-- {% block action_buttons %}
-<a href="{% url 'ventelocavoiture:dashboard_ajouter_voiture' %}" class="btn btn-sm btn-primary">
-    <i class="fas fa-plus me-1"></i> Ajouter une voiture
-</a>
-{% endblock %} -->
+
 
 {% block content %}
 <a href="{% url 'ventelocavoiture:dashboard_ajouter_voiture' %}" class="btn btn-sm btn-primary">
@@ -16,12 +12,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">Liste des voitures</h6>
-        <div class="input-group" style="width: 300px;">
-            <input type="text" class="form-control" placeholder="Rechercher..." id="searchVoitures">
-            <button class="btn btn-outline-secondary" type="button">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
+        
     </div>
     <div class="card-body">
         <div class="table-responsive">
